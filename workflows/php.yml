@@ -1,0 +1,32 @@
+name: PHP CI
+
+on:
+  push:
+    paths:
+      - 'wordpress/**'
+  pull_request:
+    paths:
+      - 'wordpress/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.0'
+
+    - name: Validate PHP
+      run: php -l wordpress/my-plugin/my-plugin.php
+
+    - name: Run PHPStan
+      run: phpstan analyse
+      working-directory: ./wordpress
+
+    - name: Run PHPCS
+      run: phpcs --standard=WordPress wordpress/my-plugin
